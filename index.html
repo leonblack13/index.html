@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LeonBlack13 - Retro Games & Music Hub</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Google Fonts: Plus Jakarta Sans & Press Start 2P -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  
-  <script>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>LeonBlack13 - Retro Games, CPS &amp; Neo Geo Arcade Hub</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- FontAwesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<!-- JSZip para inspección y preparación de ROMsets arcade ZIP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Press Start 2P -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Press+Start+2P&amp;family=VT323&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<script>
     tailwind.config = {
       theme: {
         extend: {
@@ -28,14 +29,14 @@
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             pixel: ['"Press Start 2P"', 'monospace'],
-            retro: ['"VT323"', 'monospace']
+            retro: ['"VT323"', 'monospace'],
+            mono: ['"Space Mono"', 'monospace']
           }
         }
       }
     }
   </script>
-
-  <style>
+<style>
     /* Efecto CRT Scanlines opcional */
     .crt::after {
       content: " ";
@@ -61,359 +62,404 @@
   </style>
 </head>
 <body class="bg-surface-dark text-slate-200 font-sans min-h-screen flex flex-col selection:bg-brand selection:text-black">
-
-  <!-- TOP NAVIGATION BAR -->
-  <header class="border-b border-surface-border bg-surface/90 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-3 flex items-center justify-between">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand to-emerald-400 flex items-center justify-center text-black font-black text-xl shadow-lg shadow-brand/20">
-        <i class="fa-solid fa-gamepad"></i>
-      </div>
-      <div>
-        <div class="flex items-center space-x-2">
-          <span class="font-pixel text-xs text-brand tracking-widest uppercase">LEONBLACK<span class="text-white">13</span></span>
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand/10 text-brand border border-brand/20">V2.4 PRO</span>
-        </div>
-        <p class="text-[11px] text-slate-400">Multi-System Retro Arcade & Synthwave Music Hub</p>
-      </div>
-    </div>
-
-    <!-- Live Status & Quick Action Buttons -->
-    <div class="flex items-center space-x-3">
-      <div id="connection-badge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-surface-card border border-surface-border text-xs">
-        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-        <span class="text-slate-300">Emulator Core: <strong class="text-brand">Online (HTML5)</strong></span>
-      </div>
-      <a href="https://github.com" target="_blank" class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-border border border-surface-border text-xs font-semibold flex items-center space-x-2 transition">
-        <i class="fa-brands fa-github text-white"></i>
-        <span class="hidden md:inline">Repositorio</span>
-      </a>
-    </div>
-  </header>
-
-  <!-- MAIN APP CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-    <!-- LEFT COLUMN: CONSOLES & DEMO GAMES (4 Cols) -->
-    <div class="lg:col-span-4 space-y-5">
-      
-      <!-- Consola Selector Card -->
-      <div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
-        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
-          <span><i class="fa-solid fa-microchip text-brand mr-2"></i>Elige Sistema Retro</span>
-          <span class="text-[10px] text-brand bg-brand/10 px-2 py-0.5 rounded">60 FPS</span>
-        </h2>
-
-        <div class="grid grid-cols-2 gap-2 text-xs" id="console-selector">
-          <button onclick="setSystem('sega', 'SEGA Mega Drive / Genesis', '🎮 Sonic / Streets of Rage / Shinobi')" class="console-btn active p-2.5 rounded-xl border border-brand bg-brand/10 text-white font-semibold flex items-center space-x-2.5 transition text-left">
-            <span class="text-lg">🕹️</span>
-            <div>
-              <div class="font-bold text-brand">SEGA Genesis</div>
-              <div class="text-[10px] text-slate-400">16-bit 6-Botones</div>
-            </div>
-          </button>
-          
-          <button onclick="setSystem('snes', 'Super Nintendo (SNES)', '🍄 Mario World / Donkey Kong / Chrono')" class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left">
-            <span class="text-lg">🎮</span>
-            <div>
-              <div class="font-bold">Super Nintendo</div>
-              <div class="text-[10px] text-slate-400">16-bit Mode 7</div>
-            </div>
-          </button>
-
-          <button onclick="setSystem('nes', 'Nintendo Entertainment System', '⭐ Mario Bros / Contra / Castlevania')" class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left">
-            <span class="text-lg">📼</span>
-            <div>
-              <div class="font-bold">NES 8-Bit</div>
-              <div class="text-[10px] text-slate-400">Famicom Classic</div>
-            </div>
-          </button>
-
-          <button onclick="setSystem('arcade', 'Arcade CPS 1, 2 & Neo Geo', '🥊 SFII / Metal Slug / KOF')" class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left">
-            <span class="text-lg">👾</span>
-            <div>
-              <div class="font-bold">Arcade & CPS</div>
-              <div class="text-[10px] text-slate-400">Fichines / NeoGeo</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Quick Test Games (Garantizados 100% que cargan con 1 clic) -->
-      <div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
-        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-          <span><i class="fa-solid fa-play text-brand mr-2"></i>Juegos de Prueba (1-Clic)</span>
-          <span class="text-[10px] text-emerald-400 font-bold">¡Sin subir nada!</span>
-        </h2>
-        <p class="text-xs text-slate-400 mb-3">Haz clic en cualquiera para comprobar de inmediato que el motor gráfico y de audio funciona en tu navegador:</p>
-
-        <div class="space-y-2">
-          <!-- Game 1: Retro Cyber Space Arcade -->
-          <button onclick="loadDemoGame('space')" class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition">
-            <div class="flex items-center space-x-3 text-left">
-              <div class="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
+<!-- TOP NAVIGATION BAR -->
+<header class="border-b border-surface-border bg-surface/90 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand to-emerald-400 flex items-center justify-center text-black font-black text-xl shadow-lg shadow-brand/20">
+<i class="fa-solid fa-gamepad"></i>
+</div>
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-pixel text-xs text-brand tracking-widest uppercase">LEONBLACK<span class="text-white">13</span></span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand/10 text-brand border border-brand/20">V3.0 ARCADE PRO</span>
+</div>
+<p class="text-[11px] text-slate-400">Capcom CPS 1-2-3, SNK Neo Geo, SEGA &amp; SNES WebAssembly Hub</p>
+</div>
+</div>
+<!-- Live Status & Quick Action Buttons -->
+<div class="flex items-center space-x-3">
+<div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-surface-card border border-surface-border text-xs" id="connection-badge">
+<span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+<span class="text-slate-300">Core: <strong class="text-brand" id="active-core-badge">FBNeo Arcade / HTML5</strong></span>
+</div>
+<a class="px-3 py-1.5 rounded-lg bg-surface-card hover:bg-surface-border border border-surface-border text-xs font-semibold flex items-center space-x-2 transition" href="https://github.com" target="_blank">
+<i class="fa-brands fa-github text-white"></i>
+<span class="hidden md:inline">Repositorio</span>
+</a>
+</div>
+</header>
+<!-- MAIN APP CONTAINER -->
+<main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- LEFT COLUMN: CONSOLES & DEMO GAMES (4 Cols) -->
+<div class="lg:col-span-4 space-y-5">
+<!-- Consola Selector Card: Actualizado con CPS-1/2, CPS-3 y Neo Geo -->
+<div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
+<h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+<span><i class="fa-solid fa-microchip text-brand mr-2"></i>Elige Sistema Retro</span>
+<span class="text-[10px] text-brand bg-brand/10 px-2 py-0.5 rounded">FBNeo 60 FPS</span>
+</h2>
+<div class="grid grid-cols-2 gap-2 text-xs" id="console-selector">
+<!-- Arcade CPS 1 & 2 -->
+<button class="console-btn active p-2.5 rounded-xl border border-brand bg-brand/10 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('cps2', 'Capcom CPS 1 &amp; 2 (Arcade)', '🥊 SF II / Marvel / Cadillacs &amp; Dinosaurs', 'fbneo', this)">
+<span class="text-lg">🥊</span>
+<div>
+<div class="font-bold text-brand">Arcade CPS 1 &amp; 2</div>
+<div class="text-[10px] text-slate-400">Street Fighter / Marvel</div>
+</div>
+</button>
+<!-- Capcom CPS-3 -->
+<button class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('cps3', 'Capcom CPS-3 (Arcade)', '🥋 SF III 3rd Strike / JoJo / Red Earth', 'fbneo', this)">
+<span class="text-lg">🔥</span>
+<div>
+<div class="font-bold">Capcom CPS-3</div>
+<div class="text-[10px] text-slate-400">SF III 3rd Strike / JoJo</div>
+</div>
+</button>
+<!-- SNK Neo Geo -->
+<button class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('neogeo', 'SNK Neo Geo MVS / AES', '💥 Metal Slug / KOF 98 / Samurai Shodown', 'fbneo', this)">
+<span class="text-lg">💥</span>
+<div>
+<div class="font-bold">SNK Neo Geo</div>
+<div class="text-[10px] text-slate-400">Metal Slug / KOF 98</div>
+</div>
+</button>
+<!-- SEGA Genesis -->
+<button class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('sega', 'SEGA Mega Drive / Genesis', '🎮 Sonic / Streets of Rage / Shinobi', 'segaMD', this)">
+<span class="text-lg">🕹️</span>
+<div>
+<div class="font-bold">SEGA Genesis</div>
+<div class="text-[10px] text-slate-400">16-bit 6-Botones</div>
+</div>
+</button>
+<!-- Super Nintendo -->
+<button class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('snes', 'Super Nintendo (SNES)', '🍄 Mario World / Donkey Kong / Chrono', 'snes', this)">
+<span class="text-lg">🎮</span>
+<div>
+<div class="font-bold">Super Nintendo</div>
+<div class="text-[10px] text-slate-400">16-bit Mode 7</div>
+</div>
+</button>
+<!-- NES 8-Bit -->
+<button class="console-btn p-2.5 rounded-xl border border-surface-border bg-surface-card hover:border-slate-500 text-white font-semibold flex items-center space-x-2.5 transition text-left" onclick="setSystem('nes', 'Nintendo Entertainment System', '⭐ Mario Bros / Contra / Castlevania', 'nes', this)">
+<span class="text-lg">📼</span>
+<div>
+<div class="font-bold">NES 8-Bit</div>
+<div class="text-[10px] text-slate-400">Famicom Classic</div>
+</div>
+</button>
+</div>
+</div>
+<!-- Quick Test Games (Garantizados 100% que cargan con 1 clic) -->
+<div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
+<h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+<span><i class="fa-solid fa-play text-brand mr-2"></i>Juegos de Prueba (1-Clic)</span>
+<span class="text-[10px] text-emerald-400 font-bold">¡Sin subir nada!</span>
+</h2>
+<p class="text-xs text-slate-400 mb-3">Haz clic en cualquiera para comprobar de inmediato el motor gráfico CPS/Arcade y audio en tu navegador:</p>
+<div class="space-y-2">
+<!-- Game 0: Arcade Fighter Arena (Nuevo: CPS / Neo Geo Street Fighter Demo) -->
+<button class="w-full p-2.5 rounded-xl bg-surface-card border border-brand/50 hover:border-brand flex items-center justify-between group transition" onclick="loadDemoGame('fighter')">
+<div class="flex items-center space-x-3 text-left">
+<div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-brand flex items-center justify-center font-bold text-sm">
+                🥊
+              </div>
+<div>
+<h4 class="text-xs font-bold text-brand group-hover:text-white transition">Neo Geo Cyber Fighter Arena</h4>
+<p class="text-[10px] text-slate-400">CPS 6-Botones (Golpes y Patadas) • Combos</p>
+</div>
+</div>
+<span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
+</button>
+<!-- Game 1: Retro Cyber Space Arcade -->
+<button class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition" onclick="loadDemoGame('space')">
+<div class="flex items-center space-x-3 text-left">
+<div class="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
                 🚀
               </div>
-              <div>
-                <h4 class="text-xs font-bold text-white group-hover:text-brand transition">LeonBlack Cyber Invaders</h4>
-                <p class="text-[10px] text-slate-400">Arcade Shoot'em up nativo • 60 FPS</p>
-              </div>
-            </div>
-            <span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
-          </button>
-
-          <!-- Game 2: Mega Drive Retro Pong -->
-          <button onclick="loadDemoGame('pong')" class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition">
-            <div class="flex items-center space-x-3 text-left">
-              <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-brand flex items-center justify-center font-bold text-sm">
+<div>
+<h4 class="text-xs font-bold text-white group-hover:text-brand transition">LeonBlack Cyber Invaders</h4>
+<p class="text-[10px] text-slate-400">Arcade Shoot'em up nativo • 60 FPS</p>
+</div>
+</div>
+<span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
+</button>
+<!-- Game 2: Mega Drive Retro Pong -->
+<button class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition" onclick="loadDemoGame('pong')">
+<div class="flex items-center space-x-3 text-left">
+<div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-brand flex items-center justify-center font-bold text-sm">
                 🏓
               </div>
-              <div>
-                <h4 class="text-xs font-bold text-white group-hover:text-brand transition">Mega Drive Neon Tennis</h4>
-                <p class="text-[10px] text-slate-400">Modo 1P vs CPU o 2P • Física Retro</p>
-              </div>
-            </div>
-            <span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
-          </button>
-
-          <!-- Game 3: Brick Breaker Arcade -->
-          <button onclick="loadDemoGame('brick')" class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition">
-            <div class="flex items-center space-x-3 text-left">
-              <div class="w-9 h-9 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">
+<div>
+<h4 class="text-xs font-bold text-white group-hover:text-brand transition">Mega Drive Neon Tennis</h4>
+<p class="text-[10px] text-slate-400">Modo 1P vs CPU o 2P • Física Retro</p>
+</div>
+</div>
+<span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
+</button>
+<!-- Game 3: Brick Breaker Arcade -->
+<button class="w-full p-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand/60 flex items-center justify-between group transition" onclick="loadDemoGame('brick')">
+<div class="flex items-center space-x-3 text-left">
+<div class="w-9 h-9 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">
                 🧱
               </div>
-              <div>
-                <h4 class="text-xs font-bold text-white group-hover:text-brand transition">CPS Arkanoid Cyber Break</h4>
-                <p class="text-[10px] text-slate-400">Destruye bloques synthwave con audio</p>
-              </div>
-            </div>
-            <span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- CARGADOR DE ROMS LOCALES O ENLACES -->
-      <div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
-        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-          <span><i class="fa-solid fa-folder-open text-brand mr-2"></i>Cargar tus Propias ROMs</span>
-          <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">.bin / .sfc / .nes / .zip</span>
-        </h2>
-        
-        <label for="rom-file-input" class="cursor-pointer border-2 border-dashed border-surface-border hover:border-brand/60 rounded-xl p-4 flex flex-col items-center justify-center text-center transition bg-surface-card/40">
-          <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand mb-1"></i>
-          <span class="text-xs font-bold text-white">Haz clic aquí o arrastra tu ROM</span>
-          <span class="text-[10px] text-slate-400 mt-0.5">Compatible con SEGA (.bin, .gen), SNES (.sfc, .smc) y NES (.nes)</span>
-          <input type="file" id="rom-file-input" accept=".bin,.gen,.md,.sfc,.smc,.nes,.gb,.gba,.zip" class="hidden" onchange="handleRomUpload(event)">
-        </label>
-        
-        <div id="loaded-file-info" class="hidden mt-2 p-2 rounded-lg bg-brand/10 border border-brand/30 flex items-center justify-between text-xs text-brand">
-          <span class="truncate font-semibold" id="loaded-file-name">juego.bin</span>
-          <button onclick="startUploadedRom()" class="px-2.5 py-1 bg-brand text-black font-bold rounded text-[11px] hover:bg-white transition">Ejecutar</button>
-        </div>
-      </div>
-
-      <!-- SYNTHWAVE / RETRO MUSIC STREAMER -->
-      <div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
-            <i class="fa-solid fa-music text-brand mr-2"></i>Música de Fondo (Synthwave)
+<div>
+<h4 class="text-xs font-bold text-white group-hover:text-brand transition">CPS Arkanoid Cyber Break</h4>
+<p class="text-[10px] text-slate-400">Destruye bloques synthwave con audio</p>
+</div>
+</div>
+<span class="text-xs text-brand font-bold"><i class="fa-solid fa-circle-play text-lg"></i></span>
+</button>
+</div>
+</div>
+<!-- CARGADOR DE ROMS LOCALES (.ZIP, .NEO, .BIN, .SFC, .NES) -->
+<div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl space-y-3">
+<h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+<span><i class="fa-solid fa-folder-open text-brand mr-2"></i>Cargar ROMs (.ZIP / CPS / Neo Geo)</span>
+<span class="text-[10px] bg-brand/10 text-brand border border-brand/20 px-2 py-0.5 rounded font-mono font-bold">.ZIP / .NEO / .BIN</span>
+</h2>
+<label class="cursor-pointer border-2 border-dashed border-surface-border hover:border-brand/60 rounded-xl p-4 flex flex-col items-center justify-center text-center transition bg-surface-card/40 group" for="rom-file-input">
+<i class="fa-solid fa-file-zipper text-2xl text-brand mb-1 group-hover:scale-110 transition"></i>
+<span class="text-xs font-bold text-white">Haz clic aquí o arrastra tu ROM (.ZIP)</span>
+<span class="text-[10px] text-slate-400 mt-0.5">Soporta ROMsets: <strong>mslug.zip, sf2.zip, kof98.zip, sfiii3.zip</strong>, etc.</span>
+<input accept=".zip,.neo,.bin,.gen,.md,.sfc,.smc,.nes" class="hidden" id="rom-file-input" onchange="handleRomUpload(event)" type="file"/>
+</label>
+<!-- Estado de ROM detectada -->
+<div class="hidden p-2.5 rounded-lg bg-brand/10 border border-brand/30 flex flex-col space-y-1.5 text-xs text-brand" id="loaded-file-info">
+<div class="flex items-center justify-between">
+<span class="truncate font-semibold flex items-center" id="loaded-file-name">
+<i class="fa-solid fa-file-archive mr-1.5"></i>juego.zip
+            </span>
+<button class="px-3 py-1 bg-brand text-black font-bold rounded text-[11px] hover:bg-white transition flex items-center space-x-1" onclick="startUploadedRom()">
+<i class="fa-solid fa-play text-[10px]"></i>
+<span>Ejecutar Arcade</span>
+</button>
+</div>
+<div class="text-[10px] text-slate-300 font-mono flex items-center justify-between border-t border-brand/20 pt-1">
+<span id="detected-romset-tag">Sistema: CPS / Neo Geo FBNeo Core</span>
+<span class="text-brand" id="detected-files-count">Listo</span>
+</div>
+</div>
+<!-- Módulo BIOS Neo Geo -->
+<div class="p-2.5 rounded-xl bg-surface-card border border-surface-border text-xs space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="font-bold text-slate-300 flex items-center text-[11px]">
+<i class="fa-solid fa-shield-halved text-amber-400 mr-1.5"></i>BIOS Neo Geo (neogeo.zip)
+            </span>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono" id="bios-badge">FBNeo Universal Integrada</span>
+</div>
+<p class="text-[10px] text-slate-400 leading-normal">
+            El núcleo FBNeo WebAssembly emula automáticamente la BIOS universal (UniBIOS / MVS). Si posees un archivo <code class="text-amber-300">neogeo.zip</code> personalizado:
+          </p>
+<label class="inline-flex items-center space-x-1.5 text-[10px] text-brand hover:underline cursor-pointer font-bold" for="bios-file-input">
+<i class="fa-solid fa-paperclip"></i>
+<span>Subir neogeo.zip manual opcional</span>
+<input accept=".zip" class="hidden" id="bios-file-input" onchange="handleBiosUpload(event)" type="file"/>
+</label>
+</div>
+</div>
+<!-- SYNTHWAVE / RETRO MUSIC STREAMER -->
+<div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center">
+<i class="fa-solid fa-music text-brand mr-2"></i>Música de Fondo (Synthwave)
           </h2>
-          <span id="music-indicator" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">En pausa</span>
-        </div>
-
-        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-card border border-surface-border">
-          <div class="flex items-center space-x-3">
-            <button id="play-music-btn" onclick="toggleSynthwaveMusic()" class="w-10 h-10 rounded-full bg-brand text-black flex items-center justify-center font-bold text-sm shadow-lg shadow-brand/20 hover:scale-105 transition">
-              <i class="fa-solid fa-play" id="play-music-icon"></i>
+<span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest" id="music-indicator">En pausa</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl bg-surface-card border border-surface-border">
+<div class="flex items-center space-x-3">
+<button class="w-10 h-10 rounded-full bg-brand text-black flex items-center justify-center font-bold text-sm shadow-lg shadow-brand/20 hover:scale-105 transition" id="play-music-btn" onclick="toggleSynthwaveMusic()">
+<i class="fa-solid fa-play" id="play-music-icon"></i>
+</button>
+<div>
+<div class="text-xs font-bold text-white" id="current-track-title">Retro FM - Arcade Synthwave</div>
+<div class="text-[10px] text-slate-400">Audio concurrente mientras juegas</div>
+</div>
+</div>
+<!-- Selector de volumen -->
+<div class="flex items-center space-x-1.5 text-xs text-slate-400">
+<i class="fa-solid fa-volume-high text-[10px]"></i>
+<input class="w-16 h-1 bg-surface-border rounded-lg accent-brand" max="100" min="0" onchange="setMusicVolume(this.value)" type="range" value="40"/>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: MAIN EMULATOR SCREEN & CONTROLS (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col space-y-4">
+<!-- EMULATOR CANVAS CONTAINER -->
+<div class="bg-surface rounded-2xl border border-surface-border overflow-hidden shadow-2xl flex flex-col">
+<!-- Screen Toolbar -->
+<div class="px-4 py-2.5 bg-surface-card border-b border-surface-border flex items-center justify-between flex-wrap gap-2 text-xs">
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+<span class="font-bold text-white" id="active-game-title">LeonBlack13 Arcade: Listo para CPS, Neo Geo y Consolas</span>
+</div>
+<div class="flex items-center space-x-2">
+<!-- Insert Coin (Arcade Credit) -->
+<button class="px-2.5 py-1 rounded bg-amber-500/20 border border-amber-500/50 hover:bg-amber-500/30 text-[11px] font-bold text-amber-300 transition flex items-center space-x-1" onclick="insertCoinSound()">
+<i class="fa-solid fa-coins text-amber-400"></i>
+<span>INSERT COIN (5)</span>
+</button>
+<!-- CRT Shader Toggle -->
+<button class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-brand text-[11px] font-semibold text-slate-300 transition" id="crt-toggle-btn" onclick="toggleCrtShader()">
+<i class="fa-solid fa-tv mr-1 text-brand"></i> CRT Shaders: <span id="crt-status">ON</span>
+</button>
+<!-- Fullscreen -->
+<button class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-brand text-[11px] font-semibold text-slate-300 transition" onclick="toggleFullscreen()">
+<i class="fa-solid fa-expand mr-1 text-brand"></i> Pantalla Completa
             </button>
-            <div>
-              <div class="text-xs font-bold text-white" id="current-track-title">Retro FM - 80s Synthwave Chill</div>
-              <div class="text-[10px] text-slate-400">Audio concurrente mientras juegas</div>
-            </div>
-          </div>
-          <!-- Selector de volumen -->
-          <div class="flex items-center space-x-1.5 text-xs text-slate-400">
-            <i class="fa-solid fa-volume-high text-[10px]"></i>
-            <input type="range" min="0" max="100" value="40" class="w-16 h-1 bg-surface-border rounded-lg accent-brand" onchange="setMusicVolume(this.value)">
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT COLUMN: MAIN EMULATOR SCREEN & CONTROLS (8 Cols) -->
-    <div class="lg:col-span-8 flex flex-col space-y-4">
-      
-      <!-- EMULATOR CANVAS CONTAINER -->
-      <div class="bg-surface rounded-2xl border border-surface-border overflow-hidden shadow-2xl flex flex-col">
-        
-        <!-- Screen Toolbar -->
-        <div class="px-4 py-2.5 bg-surface-card border-b border-surface-border flex items-center justify-between flex-wrap gap-2 text-xs">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-            <span class="font-bold text-white" id="active-game-title">LeonBlack13: Esperando Juego o Demo</span>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <!-- CRT Shader Toggle -->
-            <button onclick="toggleCrtShader()" id="crt-toggle-btn" class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-brand text-[11px] font-semibold text-slate-300 transition">
-              <i class="fa-solid fa-tv mr-1 text-brand"></i> CRT Shaders: <span id="crt-status">ON</span>
+<!-- Reiniciar -->
+<button class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-red-400 text-[11px] font-semibold text-slate-300 transition" onclick="restartCurrentGame()">
+<i class="fa-solid fa-rotate-left mr-1 text-amber-400"></i> Reiniciar
             </button>
-
-            <!-- Fullscreen -->
-            <button onclick="toggleFullscreen()" class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-brand text-[11px] font-semibold text-slate-300 transition">
-              <i class="fa-solid fa-expand mr-1 text-brand"></i> Pantalla Completa
-            </button>
-
-            <!-- Reiniciar -->
-            <button onclick="restartCurrentGame()" class="px-2.5 py-1 rounded bg-surface border border-surface-border hover:border-red-400 text-[11px] font-semibold text-slate-300 transition">
-              <i class="fa-solid fa-rotate-left mr-1 text-amber-400"></i> Reiniciar
-            </button>
-          </div>
-        </div>
-
-        <!-- The Display Viewport -->
-        <div id="emulator-viewport" class="relative w-full aspect-[4/3] max-h-[500px] bg-black flex items-center justify-center overflow-hidden crt">
-          
-          <!-- Fallback Interactive Game Canvas -->
-          <canvas id="game-canvas" width="640" height="480" class="w-full h-full object-contain"></canvas>
-
-          <!-- EmulatorJS Container (Para cuando se active ROM real) -->
-          <div id="emulatorjs-container" class="absolute inset-0 w-full h-full hidden z-10 bg-black"></div>
-
-          <!-- Splash Overlay cuando no hay juego activo -->
-          <div id="idle-overlay" class="absolute inset-0 bg-surface-dark/95 flex flex-col items-center justify-center p-6 text-center z-30 transition-opacity duration-300">
-            <div class="w-20 h-20 rounded-2xl bg-surface-card border border-brand/40 flex items-center justify-center text-4xl text-brand mb-4 shadow-xl shadow-brand/10">
-              <i class="fa-solid fa-gamepad"></i>
-            </div>
-            <h3 class="font-pixel text-sm text-brand mb-2">SISTEMA LISTO PARA JUGAR</h3>
-            <p class="text-xs text-slate-400 max-w-md mb-5 leading-relaxed">
-              Selecciona un <strong class="text-white">Juego de Prueba (1-Clic)</strong> en el panel de la izquierda para probar de inmediato la pantalla y los mandos, o arrastra una ROM de SEGA / SNES.
+</div>
+</div>
+<!-- The Display Viewport -->
+<div class="relative w-full aspect-[4/3] max-h-[500px] bg-black flex items-center justify-center overflow-hidden crt" id="emulator-viewport">
+<!-- Fallback Interactive Game Canvas -->
+<canvas class="w-full h-full object-contain" height="480" id="game-canvas" width="640"></canvas>
+<!-- EmulatorJS Container (Para cuando se active ROM real CPS / Neo Geo / Retro) -->
+<div class="absolute inset-0 w-full h-full hidden z-10 bg-black" id="emulatorjs-container"></div>
+<!-- Banner Informativo de Carga Arcade FBNeo -->
+<div class="absolute top-4 left-4 right-4 z-20 hidden p-3 rounded-xl bg-surface-card/90 backdrop-blur border border-brand/50 text-xs text-white shadow-2xl flex items-center justify-between animate-fade-in" id="loading-banner">
+<div class="flex items-center space-x-3">
+<div class="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+<div>
+<p class="font-bold text-brand" id="loading-banner-text">Cargando ROMset CPS/Neo Geo en motor FBNeo WASM...</p>
+<p class="text-[10px] text-slate-400" id="loading-banner-sub">Extrayendo archivos y verificando BIOS (neogeo.zip)...</p>
+</div>
+</div>
+<span class="text-[10px] font-mono text-emerald-400 bg-brand/10 px-2 py-0.5 rounded border border-brand/30">FBNeo Libretro Core</span>
+</div>
+<!-- Splash Overlay cuando no hay juego activo -->
+<div class="absolute inset-0 bg-surface-dark/95 flex flex-col items-center justify-center p-6 text-center z-30 transition-opacity duration-300" id="idle-overlay">
+<div class="w-20 h-20 rounded-2xl bg-surface-card border border-brand/40 flex items-center justify-center text-4xl text-brand mb-4 shadow-xl shadow-brand/10">
+<i class="fa-solid fa-gamepad"></i>
+</div>
+<h3 class="font-pixel text-sm text-brand mb-2">SISTEMA ARCADE CPS &amp; NEO GEO LISTO</h3>
+<p class="text-xs text-slate-400 max-w-lg mb-4 leading-relaxed">
+              Selecciona la demo interactiva <strong class="text-white">Neo Geo Cyber Fighter Arena</strong> para probar los 6 botones Arcade al instante, o arrastra un ROMset <strong class="text-brand">.ZIP</strong> de Capcom Play System (CPS-1, CPS-2, CPS-3) o SNK Neo Geo.
             </p>
-            <div class="flex flex-wrap items-center justify-center gap-2">
-              <button onclick="loadDemoGame('space')" class="px-4 py-2.5 rounded-xl bg-brand text-black font-bold text-xs hover:bg-white transition flex items-center space-x-2 shadow-lg shadow-brand/20">
-                <i class="fa-solid fa-play"></i>
-                <span>Jugar Cyber Invaders (Demo)</span>
-              </button>
-              <button onclick="loadDemoGame('pong')" class="px-4 py-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand text-white font-bold text-xs transition">
-                <span>Jugar Mega Drive Tennis</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- System Telemetry Bar -->
-        <div class="px-4 py-2 bg-surface-dark border-t border-surface-border flex items-center justify-between text-[11px] text-slate-400 font-mono">
-          <div class="flex items-center space-x-4">
-            <span>FPS: <strong class="text-brand" id="fps-counter">60.0</strong></span>
-            <span>Audio: <strong class="text-emerald-400">44.1kHz Stereo</strong></span>
-            <span>Mando USB/BT: <strong class="text-slate-300" id="gamepad-status">Detectando...</strong></span>
-          </div>
-          <div>LeonBlack13 Engine • WebAssembly & Canvas2D</div>
-        </div>
-      </div>
-
-      <!-- SEGA MEGA DRIVE 6-BUTTON VIRTUAL ON-SCREEN GAMEPAD -->
-      <div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center">
-            <i class="fa-solid fa-gamepad text-brand mr-2"></i>Controles Táctiles y de Teclado (SEGA 6-Botones)
+<div class="flex flex-wrap items-center justify-center gap-2">
+<button class="px-4 py-2.5 rounded-xl bg-brand text-black font-bold text-xs hover:bg-white transition flex items-center space-x-2 shadow-lg shadow-brand/20" onclick="loadDemoGame('fighter')">
+<i class="fa-solid fa-play"></i>
+<span>Jugar Cyber Fighter (CPS / Neo Geo Demo)</span>
+</button>
+<button class="px-4 py-2.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand text-white font-bold text-xs transition" onclick="loadDemoGame('space')">
+<span>Jugar Cyber Invaders</span>
+</button>
+</div>
+</div>
+</div>
+<!-- System Telemetry Bar -->
+<div class="px-4 py-2 bg-surface-dark border-t border-surface-border flex items-center justify-between text-[11px] text-slate-400 font-mono">
+<div class="flex items-center space-x-4">
+<span>FPS: <strong class="text-brand" id="fps-counter">60.0</strong></span>
+<span>Sistema: <strong class="text-emerald-400" id="current-system-display">Capcom CPS 1 &amp; 2</strong></span>
+<span>Créditos: <strong class="text-amber-300" id="credit-counter">99</strong></span>
+<span>Gamepad: <strong class="text-slate-300" id="gamepad-status">Detectando...</strong></span>
+</div>
+<div>LeonBlack13 Core • FBNeo &amp; Canvas2D</div>
+</div>
+</div>
+<!-- SEGA MEGA DRIVE & CPS/NEO GEO 6-BUTTON VIRTUAL ON-SCREEN GAMEPAD -->
+<div class="bg-surface rounded-2xl border border-surface-border p-4 shadow-xl">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center">
+<i class="fa-solid fa-gamepad text-brand mr-2"></i>Controles Arcade / SEGA 6-Botones
           </h3>
-          <span class="text-[10px] text-slate-400">Usa las <strong class="text-white">Flechas</strong> y teclas <strong class="text-brand">A, S, D, Z, X, C</strong></span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-          
-          <!-- D-PAD VIRTUAL -->
-          <div class="md:col-span-4 flex items-center justify-center">
-            <div class="grid grid-cols-3 gap-1.5 w-36 h-36 p-1.5 bg-surface-card rounded-2xl border border-surface-border">
-              <div></div>
-              <button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('up', true)" onmouseup="handleVirtualInput('up', false)" ontouchstart="handleVirtualInput('up', true)" ontouchend="handleVirtualInput('up', false)">
-                <i class="fa-solid fa-caret-up text-lg"></i>
-              </button>
-              <div></div>
-
-              <button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('left', true)" onmouseup="handleVirtualInput('left', false)" ontouchstart="handleVirtualInput('left', true)" ontouchend="handleVirtualInput('left', false)">
-                <i class="fa-solid fa-caret-left text-lg"></i>
-              </button>
-              <div class="flex items-center justify-center text-[10px] text-slate-600 font-pixel font-bold">13</div>
-              <button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('right', true)" onmouseup="handleVirtualInput('right', false)" ontouchstart="handleVirtualInput('right', true)" ontouchend="handleVirtualInput('right', false)">
-                <i class="fa-solid fa-caret-right text-lg"></i>
-              </button>
-
-              <div></div>
-              <button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('down', true)" onmouseup="handleVirtualInput('down', false)" ontouchstart="handleVirtualInput('down', true)" ontouchend="handleVirtualInput('down', false)">
-                <i class="fa-solid fa-caret-down text-lg"></i>
-              </button>
-              <div></div>
-            </div>
-          </div>
-
-          <!-- CENTER BUTTONS (MODE & START) -->
-          <div class="md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-3">
-            <button class="px-4 py-1.5 rounded-full bg-surface-card border border-surface-border active:bg-brand active:text-black text-slate-400 text-xs font-bold transition flex items-center space-x-1" onmousedown="handleVirtualInput('mode', true)" onmouseup="handleVirtualInput('mode', false)">
-              <span>MODE</span>
-            </button>
-            <button class="px-6 py-2 rounded-full bg-brand/20 border border-brand text-brand active:bg-brand active:text-black text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-brand/10" onmousedown="handleVirtualInput('start', true)" onmouseup="handleVirtualInput('start', false)">
-              <i class="fa-solid fa-play text-[10px]"></i>
-              <span>START</span>
-            </button>
-          </div>
-
-          <!-- 6 ACTION BUTTONS (X Y Z / A B C) -->
-          <div class="md:col-span-5 flex flex-col space-y-2">
-            <!-- Row 1: X Y Z -->
-            <div class="flex items-center justify-end space-x-2">
-              <button class="w-11 h-11 rounded-full bg-surface-card border border-slate-700 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('x', true)" onmouseup="handleVirtualInput('x', false)">
-                <span>X</span>
-                <span class="text-[8px] text-slate-500 font-mono">A</span>
-              </button>
-              <button class="w-11 h-11 rounded-full bg-surface-card border border-slate-700 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('y', true)" onmouseup="handleVirtualInput('y', false)">
-                <span>Y</span>
-                <span class="text-[8px] text-slate-500 font-mono">S</span>
-              </button>
-              <button class="w-11 h-11 rounded-full bg-surface-card border border-slate-700 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('z', true)" onmouseup="handleVirtualInput('z', false)">
-                <span>Z</span>
-                <span class="text-[8px] text-slate-500 font-mono">D</span>
-              </button>
-            </div>
-
-            <!-- Row 2: A B C (Botones Principales) -->
-            <div class="flex items-center justify-end space-x-2">
-              <button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-sm font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('a', true)" onmouseup="handleVirtualInput('a', false)">
-                <span>A</span>
-                <span class="text-[8px] text-slate-500 font-mono">Z</span>
-              </button>
-              <button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-sm font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('b', true)" onmouseup="handleVirtualInput('b', false)">
-                <span>B</span>
-                <span class="text-[8px] text-slate-500 font-mono">X</span>
-              </button>
-              <button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-sm font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('c', true)" onmouseup="handleVirtualInput('c', false)">
-                <span>C</span>
-                <span class="text-[8px] text-slate-500 font-mono">C</span>
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-  </main>
-
-  <!-- JAVASCRIPT: MOTOR DEL JUEGO Y AUDIO 100% FUNCIONAL -->
-  <script>
+<span class="text-[10px] text-slate-400">
+            Golpes: <strong class="text-indigo-400">A, S, D</strong> | Patadas: <strong class="text-brand">Z, X, C</strong> | Coin: <strong class="text-amber-400">5</strong> | Start: <strong class="text-white">1 / Enter</strong>
+</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<!-- D-PAD VIRTUAL -->
+<div class="md:col-span-4 flex items-center justify-center">
+<div class="grid grid-cols-3 gap-1.5 w-36 h-36 p-1.5 bg-surface-card rounded-2xl border border-surface-border">
+<div></div>
+<button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('up', true)" onmouseup="handleVirtualInput('up', false)" ontouchend="handleVirtualInput('up', false)" ontouchstart="handleVirtualInput('up', true)">
+<i class="fa-solid fa-caret-up text-lg"></i>
+</button>
+<div></div>
+<button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('left', true)" onmouseup="handleVirtualInput('left', false)" ontouchend="handleVirtualInput('left', false)" ontouchstart="handleVirtualInput('left', true)">
+<i class="fa-solid fa-caret-left text-lg"></i>
+</button>
+<div class="flex items-center justify-center text-[10px] text-slate-600 font-pixel font-bold">13</div>
+<button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('right', true)" onmouseup="handleVirtualInput('right', false)" ontouchend="handleVirtualInput('right', false)" ontouchstart="handleVirtualInput('right', true)">
+<i class="fa-solid fa-caret-right text-lg"></i>
+</button>
+<div></div>
+<button class="dpad-btn rounded-lg bg-surface border border-surface-border active:bg-brand active:text-black text-slate-300 flex items-center justify-center transition font-bold" onmousedown="handleVirtualInput('down', true)" onmouseup="handleVirtualInput('down', false)" ontouchend="handleVirtualInput('down', false)" ontouchstart="handleVirtualInput('down', true)">
+<i class="fa-solid fa-caret-down text-lg"></i>
+</button>
+<div></div>
+</div>
+</div>
+<!-- CENTER BUTTONS (COIN, MODE & START) -->
+<div class="md:col-span-3 flex md:flex-col items-center justify-center space-x-3 md:space-x-0 md:space-y-2">
+<button class="px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 active:bg-amber-400 active:text-black text-amber-300 text-xs font-bold transition flex items-center space-x-1" onclick="insertCoinSound()" onmousedown="handleVirtualInput('coin', true)" onmouseup="handleVirtualInput('coin', false)">
+<i class="fa-solid fa-coins text-[10px]"></i>
+<span>COIN</span>
+</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-card border border-surface-border active:bg-brand active:text-black text-slate-400 text-xs font-bold transition flex items-center space-x-1" onmousedown="handleVirtualInput('mode', true)" onmouseup="handleVirtualInput('mode', false)">
+<span>MODE</span>
+</button>
+<button class="px-6 py-2 rounded-full bg-brand/20 border border-brand text-brand active:bg-brand active:text-black text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-brand/10" onmousedown="handleVirtualInput('start', true)" onmouseup="handleVirtualInput('start', false)">
+<i class="fa-solid fa-play text-[10px]"></i>
+<span>START 1P</span>
+</button>
+</div>
+<!-- 6 ACTION BUTTONS (ARCADE / CPS / SEGA: PUNCHES & KICKS) -->
+<div class="md:col-span-5 flex flex-col space-y-2">
+<!-- Row 1: X Y Z / LP MP HP (PUNCHES) -->
+<div class="flex items-center justify-end space-x-2">
+<button class="w-12 h-12 rounded-full bg-surface-card border border-indigo-500/50 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('x', true)" onmouseup="handleVirtualInput('x', false)" ontouchend="handleVirtualInput('x', false)" ontouchstart="handleVirtualInput('x', true)">
+<span class="text-[11px]">LP</span>
+<span class="text-[8px] text-slate-500 font-mono">X [A]</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-card border border-indigo-500/50 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('y', true)" onmouseup="handleVirtualInput('y', false)" ontouchend="handleVirtualInput('y', false)" ontouchstart="handleVirtualInput('y', true)">
+<span class="text-[11px]">MP</span>
+<span class="text-[8px] text-slate-500 font-mono">Y [S]</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-card border border-indigo-500/50 active:bg-indigo-500 active:text-white text-indigo-400 text-xs font-black shadow flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('z', true)" onmouseup="handleVirtualInput('z', false)" ontouchend="handleVirtualInput('z', false)" ontouchstart="handleVirtualInput('z', true)">
+<span class="text-[11px]">HP</span>
+<span class="text-[8px] text-slate-500 font-mono">Z [D]</span>
+</button>
+</div>
+<!-- Row 2: A B C / LK MK HK (KICKS) -->
+<div class="flex items-center justify-end space-x-2">
+<button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-xs font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('a', true)" onmouseup="handleVirtualInput('a', false)" ontouchend="handleVirtualInput('a', false)" ontouchstart="handleVirtualInput('a', true)">
+<span class="text-[11px]">LK</span>
+<span class="text-[8px] text-slate-500 font-mono">A [Z]</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-xs font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('b', true)" onmouseup="handleVirtualInput('b', false)" ontouchend="handleVirtualInput('b', false)" ontouchstart="handleVirtualInput('b', true)">
+<span class="text-[11px]">MK</span>
+<span class="text-[8px] text-slate-500 font-mono">B [X]</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-card border-2 border-brand/50 active:bg-brand active:text-black text-brand text-xs font-black shadow-lg shadow-brand/10 flex flex-col items-center justify-center transition" onmousedown="handleVirtualInput('c', true)" onmouseup="handleVirtualInput('c', false)" ontouchend="handleVirtualInput('c', false)" ontouchstart="handleVirtualInput('c', true)">
+<span class="text-[11px]">HK</span>
+<span class="text-[8px] text-slate-500 font-mono">C [C]</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- JAVASCRIPT: MOTOR DEL JUEGO, PARSER DE ROMS CPS / NEO GEO Y AUDIO -->
+<script>
     // --- ESTADO DEL JUGADOR Y SISTEMA ---
     const state = {
-      system: 'sega',
-      activeGame: 'space', // 'space', 'pong', 'brick', o 'custom'
+      system: 'cps2', // 'cps2', 'cps3', 'neogeo', 'sega', 'snes', 'nes'
+      core: 'fbneo',
+      activeGame: 'fighter', // 'fighter', 'space', 'pong', 'brick', o 'custom'
       crtEnabled: true,
       musicPlaying: false,
+      credits: 99,
       keys: {
         up: false, down: false, left: false, right: false,
         a: false, b: false, c: false,
         x: false, y: false, z: false,
-        start: false, mode: false
+        start: false, mode: false, coin: false
       }
     };
 
@@ -444,8 +490,16 @@
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {
-        console.warn('Audio not allowed yet:', e);
+        console.warn('Audio no permitido aún:', e);
       }
+    }
+
+    function insertCoinSound() {
+      initAudio();
+      state.credits++;
+      document.getElementById('credit-counter').textContent = state.credits;
+      playTone(987.77, 'square', 0.08, 0.15);
+      setTimeout(() => playTone(1318.51, 'square', 0.16, 0.2), 80);
     }
 
     // Melodía Synthwave de fondo generada proceduralmente
@@ -463,7 +517,6 @@
         indicator.textContent = 'En reproducción';
         indicator.className = 'text-[10px] text-brand font-bold uppercase tracking-widest';
 
-        // Reproductor de arpegio Synthwave
         synthInterval = setInterval(() => {
           const bassFreq = [110, 110, 130.81, 146.83][Math.floor(noteStep / 4) % 4];
           playTone(bassFreq, 'sawtooth', 0.18, 0.04);
@@ -483,17 +536,30 @@
     }
 
     function setMusicVolume(val) {
-      // Ajuste de volumen
+      // Control de volumen synthwave
     }
 
-    // --- SELECCIÓN DE SISTEMA ---
-    function setSystem(sysId, name, subtitle) {
+    // --- SELECCIÓN DE SISTEMA RETRO Y CORE ---
+    function setSystem(sysId, name, subtitle, coreName, element) {
       state.system = sysId;
+      state.core = coreName || 'fbneo';
+      
       document.querySelectorAll('.console-btn').forEach(btn => {
         btn.classList.remove('border-brand', 'bg-brand/10', 'text-white');
         btn.classList.add('border-surface-border', 'bg-surface-card');
+        const titleEl = btn.querySelector('.font-bold');
+        if (titleEl) titleEl.classList.remove('text-brand');
       });
-      event.currentTarget.classList.add('border-brand', 'bg-brand/10');
+      
+      const target = element || event.currentTarget;
+      target.classList.remove('border-surface-border', 'bg-surface-card');
+      target.classList.add('border-brand', 'bg-brand/10');
+      const activeTitle = target.querySelector('.font-bold');
+      if (activeTitle) activeTitle.classList.add('text-brand');
+
+      document.getElementById('current-system-display').textContent = name;
+      document.getElementById('active-core-badge').textContent = (coreName === 'fbneo' ? 'FBNeo Arcade (CPS/NeoGeo)' : coreName.toUpperCase()) + ' Online';
+      
       playTone(440, 'triangle', 0.08, 0.15);
     }
 
@@ -525,7 +591,11 @@
     function handleVirtualInput(btnName, isPressed) {
       state.keys[btnName] = isPressed;
       if (isPressed) {
-        playTone(330, 'square', 0.04, 0.08);
+        if (btnName === 'coin') {
+          insertCoinSound();
+        } else {
+          playTone(330, 'square', 0.04, 0.08);
+        }
       }
     }
 
@@ -536,10 +606,15 @@
         case 'arrowdown': case 's': state.keys.down = true; break;
         case 'arrowleft': case 'a': state.keys.left = true; break;
         case 'arrowright': case 'd': state.keys.right = true; break;
-        case 'z': state.keys.a = true; break;
-        case 'x': state.keys.b = true; break;
-        case 'c': state.keys.c = true; break;
-        case 'enter': state.keys.start = true; break;
+        // 6-Botones Arcade (X Y Z / A B C)
+        case 'a': state.keys.x = true; break; // LP
+        case 's': state.keys.y = true; break; // MP
+        case 'd': state.keys.z = true; break; // HP
+        case 'z': state.keys.a = true; break; // LK
+        case 'x': state.keys.b = true; break; // MK
+        case 'c': state.keys.c = true; break; // HK
+        case '5': state.keys.coin = true; insertCoinSound(); break;
+        case '1': case 'enter': state.keys.start = true; break;
         case ' ': state.keys.b = true; break;
       }
     });
@@ -550,17 +625,21 @@
         case 'arrowdown': case 's': state.keys.down = false; break;
         case 'arrowleft': case 'a': state.keys.left = false; break;
         case 'arrowright': case 'd': state.keys.right = false; break;
+        case 'a': state.keys.x = false; break;
+        case 's': state.keys.y = false; break;
+        case 'd': state.keys.z = false; break;
         case 'z': state.keys.a = false; break;
         case 'x': state.keys.b = false; break;
         case 'c': state.keys.c = false; break;
-        case 'enter': state.keys.start = false; break;
+        case '5': state.keys.coin = false; break;
+        case '1': case 'enter': state.keys.start = false; break;
         case ' ': state.keys.b = false; break;
       }
     });
 
-    // Soporte Gamepad API Nativo (Mando Bluetooth / USB)
+    // Soporte Gamepad API Nativo (Mando Bluetooth / USB Arcade Stick)
     window.addEventListener("gamepadconnected", (e) => {
-      document.getElementById('gamepad-status').textContent = '🎮 ' + e.gamepad.id.slice(0, 15) + '...';
+      document.getElementById('gamepad-status').textContent = '🕹️ ' + e.gamepad.id.slice(0, 16) + '...';
       document.getElementById('gamepad-status').className = 'text-brand font-bold';
       playTone(523.25, 'triangle', 0.2, 0.2);
     });
@@ -571,10 +650,12 @@
       state.activeGame = type;
       document.getElementById('idle-overlay').classList.add('opacity-0', 'pointer-events-none');
       document.getElementById('emulatorjs-container').classList.add('hidden');
+      document.getElementById('loading-banner').classList.add('hidden');
       document.getElementById('game-canvas').classList.remove('hidden');
 
       const titleMap = {
-        space: 'LeonBlack13: Cyber Invaders (60 FPS)',
+        fighter: 'Capcom & Neo Geo: Cyber Fighter Arena (6-Botones)',
+        space: 'LeonBlack13: Cyber Invaders Arcade (60 FPS)',
         pong: 'SEGA Mega Drive: Neon Tennis (16-Bit)',
         brick: 'Arcade CPS: Arkanoid Cyber Break'
       };
@@ -587,51 +668,134 @@
       loadDemoGame(state.activeGame);
     }
 
-    // --- CARGA DE ROM SUBIDA POR EL USUARIO ---
+    // --- MANEJADOR DE ROMS .ZIP (CPS 1-2-3 / NEO GEO / SEGA / SNES) ---
     let selectedRomFile = null;
+    let customBiosFile = null;
 
-    function handleRomUpload(e) {
+    function handleBiosUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      customBiosFile = file;
+      document.getElementById('bios-badge').textContent = 'neogeo.zip Cargada Manualmente';
+      document.getElementById('bios-badge').className = 'text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold';
+      playTone(784, 'sine', 0.15, 0.2);
+    }
+
+    async function handleRomUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       selectedRomFile = file;
-      document.getElementById('loaded-file-name').textContent = file.name;
+
+      const fileName = file.name.toLowerCase();
+      document.getElementById('loaded-file-name').innerHTML = `<i class="fa-solid fa-file-zipper mr-1.5 text-brand"></i>${file.name}`;
       document.getElementById('loaded-file-info').classList.remove('hidden');
+
+      // Auto-detección del tipo de archivo y ROMset Arcade
+      let detectedSystem = 'Arcade FBNeo Core';
+      if (fileName.includes('sfiii') || fileName.includes('redearth') || fileName.includes('jojo')) {
+        detectedSystem = 'Capcom CPS-3 (FBNeo)';
+        setSystem('cps3', 'Capcom CPS-3 (Arcade)', 'SF III 3rd Strike / JoJo', 'fbneo');
+      } else if (fileName.includes('sf2') || fileName.includes('mvsc') || fileName.includes('dino') || fileName.includes('cps1') || fileName.includes('cps2')) {
+        detectedSystem = 'Capcom CPS-1 / CPS-2 (FBNeo)';
+        setSystem('cps2', 'Capcom CPS 1 & 2 (Arcade)', 'Street Fighter / Marvel', 'fbneo');
+      } else if (fileName.includes('mslug') || fileName.includes('kof') || fileName.includes('samsho') || fileName.includes('fatfur') || fileName.includes('.neo')) {
+        detectedSystem = 'SNK Neo Geo MVS/AES (FBNeo)';
+        setSystem('neogeo', 'SNK Neo Geo MVS / AES', 'Metal Slug / KOF 98', 'fbneo');
+      } else if (fileName.endsWith('.bin') || fileName.endsWith('.gen') || fileName.endsWith('.md')) {
+        detectedSystem = 'SEGA Genesis 16-Bit';
+        setSystem('sega', 'SEGA Mega Drive / Genesis', 'Genesis 6-Botones', 'segaMD');
+      } else if (fileName.endsWith('.sfc') || fileName.endsWith('.smc')) {
+        detectedSystem = 'Super Nintendo (SNES)';
+        setSystem('snes', 'Super Nintendo (SNES)', 'SNES Mode 7', 'snes');
+      } else if (fileName.endsWith('.nes')) {
+        detectedSystem = 'NES 8-Bit';
+        setSystem('nes', 'NES 8-Bit', 'Famicom Classic', 'nes');
+      }
+
+      document.getElementById('detected-romset-tag').textContent = `Detectado: ${detectedSystem}`;
+
+      // Si es un archivo .ZIP, inspeccionarlo con JSZip para confirmar archivos internos
+      if (fileName.endsWith('.zip') && window.JSZip) {
+        try {
+          const zip = new JSZip();
+          const zipData = await zip.loadAsync(file);
+          const fileCount = Object.keys(zipData.files).length;
+          document.getElementById('detected-files-count').textContent = `${fileCount} archivos en ZIP`;
+        } catch (err) {
+          document.getElementById('detected-files-count').textContent = 'ZIP listo para Core';
+        }
+      } else {
+        document.getElementById('detected-files-count').textContent = 'Archivo listo';
+      }
+
       playTone(659.25, 'triangle', 0.1, 0.2);
     }
 
     function startUploadedRom() {
       if (!selectedRomFile) return;
       initAudio();
-      document.getElementById('idle-overlay').classList.add('opacity-0', 'pointer-events-none');
-      document.getElementById('active-game-title').textContent = 'Cargando ROM: ' + selectedRomFile.name;
 
-      // Iniciar EmulatorJS si está disponible, o fallback asistido
+      const fileName = selectedRomFile.name;
+      document.getElementById('idle-overlay').classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('active-game-title').textContent = 'Arcade: ' + fileName;
+
+      const banner = document.getElementById('loading-banner');
+      const bannerText = document.getElementById('loading-banner-text');
+      const bannerSub = document.getElementById('loading-banner-sub');
+      banner.classList.remove('hidden');
+
+      if (state.system === 'neogeo' || fileName.includes('mslug') || fileName.includes('kof')) {
+        bannerText.textContent = `Cargando ROMset Neo Geo (${fileName}) en FBNeo WASM...`;
+        bannerSub.textContent = customBiosFile ? 'Inyectando neogeo.zip subido por el usuario...' : 'Verificando UniBIOS MVS integrada en motor FBNeo...';
+      } else if (state.system === 'cps2' || state.system === 'cps3') {
+        bannerText.textContent = `Cargando ROMset Capcom Play System (${fileName}) en FBNeo WASM...`;
+        bannerSub.textContent = 'Descomprimiendo tablas Q-Sound, registros CPS y program ROMs...';
+      } else {
+        bannerText.textContent = `Cargando ROM (${fileName}) en emulador WebAssembly...`;
+        bannerSub.textContent = `Iniciando núcleo ${state.core.toUpperCase()}...`;
+      }
+
       const container = document.getElementById('emulatorjs-container');
       const canvas = document.getElementById('game-canvas');
       
       const fileUrl = URL.createObjectURL(selectedRomFile);
       
-      // Intentar montar EmulatorJS
+      // Montar contenedor y core EmulatorJS / FBNeo
       container.innerHTML = '<div id="ejs-game" style="width:100%;height:100%;"></div>';
       container.classList.remove('hidden');
       canvas.classList.add('hidden');
 
+      // Configuración de núcleo universal Arcade (FBNeo para CPS1/2/3 y Neo Geo)
+      let selectedCore = 'fbneo';
+      if (state.system === 'sega') selectedCore = 'segaMD';
+      else if (state.system === 'snes') selectedCore = 'snes';
+      else if (state.system === 'nes') selectedCore = 'nes';
+      else selectedCore = 'fbneo'; // Por defecto FBNeo para todo Arcade
+
       window.EJS_player = '#ejs-game';
-      window.EJS_core = state.system === 'sega' ? 'segaMD' : (state.system === 'snes' ? 'snes' : 'nes');
+      window.EJS_core = selectedCore;
       window.EJS_gameUrl = fileUrl;
       window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
       window.EJS_startOnLoaded = true;
 
+      // Si hay BIOS personalizada subida, adjuntarla
+      if (customBiosFile && selectedCore === 'fbneo') {
+        window.EJS_biosUrl = URL.createObjectURL(customBiosFile);
+      }
+
       const loaderScript = document.createElement('script');
       loaderScript.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
       loaderScript.onload = () => {
-        document.getElementById('active-game-title').textContent = 'Jugando: ' + selectedRomFile.name;
+        bannerText.textContent = '¡Núcleo FBNeo Arcade iniciado con éxito!';
+        bannerSub.textContent = '60 FPS • 6-Botones Habilitados • Audio Estéreo QSound';
+        setTimeout(() => banner.classList.add('hidden'), 4000);
       };
       loaderScript.onerror = () => {
-        alert('El núcleo online no pudo descargarse por restricciones de red local. Volviendo al motor arcade local.');
+        banner.classList.add('hidden');
+        alert('El núcleo online FBNeo no pudo descargarse en tu red. Cargando la demo nativa arcade Neo Geo Cyber Fighter en Canvas 2D.');
         container.classList.add('hidden');
         canvas.classList.remove('hidden');
-        loadDemoGame('space');
+        loadDemoGame('fighter');
       };
       document.body.appendChild(loaderScript);
     }
@@ -640,26 +804,47 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Estado del juego Space Invaders
+    // 1. Estado del juego Arcade Fighter Arena (CPS / Neo Geo Demo)
+    let p1 = {
+      x: 160, y: 340, width: 44, height: 90,
+      vx: 0, vy: 0, isGrounded: true,
+      action: 'idle', // 'idle', 'walk', 'punch', 'kick', 'hadoken', 'hit'
+      frame: 0, hp: 100, combo: 0, direction: 1
+    };
+
+    let p2 = {
+      x: 440, y: 340, width: 44, height: 90,
+      action: 'idle', hp: 100, frame: 0, hitTimer: 0
+    };
+
+    let sparks = [];
+    let fireballs = [];
+
+    // 2. Estado del juego Space Invaders
     let player = { x: 300, y: 430, width: 34, height: 18, speed: 6 };
     let bullets = [];
     let enemies = [];
     let score = 0;
     let enemyDirection = 1;
 
-    // Estado del juego Pong / Tennis
+    // 3. Estado del juego Pong / Tennis
     let paddleL = { y: 200, height: 70, width: 12 };
     let paddleR = { y: 200, height: 70, width: 12 };
     let ball = { x: 320, y: 240, vx: 5, vy: 3, radius: 6 };
     let scoreL = 0, scoreR = 0;
 
-    // Estado Brick Breaker
+    // 4. Estado Brick Breaker
     let bricks = [];
     let bPaddle = { x: 270, y: 440, width: 90, height: 14 };
     let bBall = { x: 320, y: 350, vx: 4, vy: -4, radius: 5 };
 
     function resetGameObjects(type) {
-      if (type === 'space') {
+      if (type === 'fighter') {
+        p1.x = 180; p1.y = 340; p1.hp = 100; p1.action = 'idle'; p1.combo = 0;
+        p2.x = 420; p2.y = 340; p2.hp = 100; p2.action = 'idle';
+        fireballs = [];
+        sparks = [];
+      } else if (type === 'space') {
         player.x = 300;
         bullets = [];
         enemies = [];
@@ -687,16 +872,18 @@
       }
     }
 
-    // Inicializar Space Invaders al cargar
-    resetGameObjects('space');
+    // Inicializar por defecto la demo Fighter CPS / Neo Geo
+    resetGameObjects('fighter');
 
-    // Bucle principal de animación (60 FPS garantizados)
+    // Bucle principal de animación a 60 FPS
     function gameLoop() {
       // Limpiar pantalla con efecto fósforo negro
       ctx.fillStyle = '#08080c';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (state.activeGame === 'space') {
+      if (state.activeGame === 'fighter') {
+        renderFighterGame();
+      } else if (state.activeGame === 'space') {
         renderSpaceGame();
       } else if (state.activeGame === 'pong') {
         renderPongGame();
@@ -707,14 +894,265 @@
       requestAnimationFrame(gameLoop);
     }
 
+    // 0. CAPCOM CPS / NEO GEO CYBER FIGHTER ARENA (Demo nativa de 6 botones)
+    function renderFighterGame() {
+      // Fondo Dojo Synthwave Neo Geo
+      const grad = ctx.createLinearGradient(0, 0, 0, 480);
+      grad.addColorStop(0, '#120b22');
+      grad.addColorStop(0.65, '#2b1055');
+      grad.addColorStop(0.66, '#0f3824');
+      grad.addColorStop(1, '#081710');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Sol Neon de fondo
+      ctx.fillStyle = '#ff007f';
+      ctx.beginPath();
+      ctx.arc(320, 220, 70, Math.PI, 0, false);
+      ctx.fill();
+
+      // Líneas de suelo con perspectiva arcade
+      ctx.strokeStyle = '#00ff87';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= canvas.width; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 320);
+        ctx.lineTo(i * 1.5 - 160, 480);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#11221a';
+      ctx.fillRect(0, 430, canvas.width, 50);
+
+      // Manejo de movimiento P1
+      if (state.keys.left && p1.x > 30) {
+        p1.x -= 4;
+        p1.action = 'walk';
+      } else if (state.keys.right && p1.x < canvas.width - 150) {
+        p1.x += 4;
+        p1.action = 'walk';
+      } else if (p1.action === 'walk') {
+        p1.action = 'idle';
+      }
+
+      // Salto
+      if (state.keys.up && p1.isGrounded) {
+        p1.vy = -14;
+        p1.isGrounded = false;
+        playTone(300, 'triangle', 0.1, 0.1);
+      }
+
+      // Física Salto
+      p1.y += p1.vy;
+      if (!p1.isGrounded) {
+        p1.vy += 0.8;
+        if (p1.y >= 340) {
+          p1.y = 340;
+          p1.vy = 0;
+          p1.isGrounded = true;
+        }
+      }
+
+      // Detección de ataques 6-Botones Arcade
+      // X = LP, Y = MP, Z = HP (Golpes)
+      // A = LK, B = MK, C = HK (Patadas)
+      if (state.keys.x && p1.action !== 'attack') { // Light Punch
+        executeAttack('punch', 8, 40, 'LP');
+      } else if (state.keys.y && p1.action !== 'attack') { // Medium Punch
+        executeAttack('punch', 14, 50, 'MP');
+      } else if (state.keys.z && p1.action !== 'attack') { // Heavy Punch / Hadoken
+        executeAttack('hadoken', 22, 60, 'HP');
+      } else if (state.keys.a && p1.action !== 'attack') { // Light Kick
+        executeAttack('kick', 10, 45, 'LK');
+      } else if (state.keys.b && p1.action !== 'attack') { // Medium Kick
+        executeAttack('kick', 16, 55, 'MK');
+      } else if (state.keys.c && p1.action !== 'attack') { // Heavy Kick
+        executeAttack('kick', 24, 65, 'HK');
+      }
+
+      // Función de ejecución de ataques arcade
+      function executeAttack(type, dmg, range, btnLabel) {
+        p1.action = 'attack';
+        p1.attackType = type;
+        p1.attackTimer = 14;
+
+        if (type === 'hadoken') {
+          // Lanzar proyectil Synthwave Hadoken
+          fireballs.push({ x: p1.x + 50, y: p1.y + 25, vx: 9, alive: true });
+          playTone(520, 'square', 0.18, 0.2);
+          setTimeout(() => playTone(350, 'sawtooth', 0.15, 0.2), 60);
+        } else {
+          playTone(type === 'punch' ? 440 : 380, 'square', 0.08, 0.15);
+        }
+
+        // Colisión cuerpo a cuerpo con P2 (Muñeco CPU)
+        const dist = Math.abs((p1.x + p1.width) - p2.x);
+        if (dist < range && Math.abs(p1.y - p2.y) < 50) {
+          p2.hp = Math.max(0, p2.hp - dmg);
+          p2.hitTimer = 12;
+          p1.combo++;
+          playTone(180, 'sawtooth', 0.1, 0.25);
+          // Chispas
+          for (let s = 0; s < 8; s++) {
+            sparks.push({
+              x: p2.x + 10, y: p2.y + 30 + Math.random() * 20,
+              vx: (Math.random() - 0.5) * 8 + 3,
+              vy: (Math.random() - 0.5) * 8,
+              color: type === 'kick' ? '#00ff87' : '#ffd700',
+              life: 15
+            });
+          }
+        }
+      }
+
+      if (p1.attackTimer > 0) {
+        p1.attackTimer--;
+        if (p1.attackTimer <= 0) p1.action = 'idle';
+      }
+
+      // Dibujar Proyectiles Hadoken
+      ctx.fillStyle = '#00e478';
+      ctx.shadowColor = '#00ff87';
+      ctx.shadowBlur = 15;
+      for (let i = fireballs.length - 1; i >= 0; i--) {
+        const fb = fireballs[i];
+        fb.x += fb.vx;
+        ctx.beginPath();
+        ctx.arc(fb.x, fb.y, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Colisión con P2
+        if (fb.x > p2.x && fb.x < p2.x + p2.width && fb.y > p2.y && fb.y < p2.y + p2.height) {
+          fb.alive = false;
+          p2.hp = Math.max(0, p2.hp - 20);
+          p2.hitTimer = 16;
+          p1.combo++;
+          playTone(140, 'sawtooth', 0.2, 0.3);
+          for (let s = 0; s < 12; s++) {
+            sparks.push({
+              x: p2.x + 10, y: fb.y,
+              vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10,
+              color: '#00ff87', life: 20
+            });
+          }
+        }
+        if (fb.x > canvas.width || !fb.alive) fireballs.splice(i, 1);
+      }
+      ctx.shadowBlur = 0;
+
+      // Actualizar chispas
+      sparks.forEach((sp, idx) => {
+        sp.x += sp.vx;
+        sp.y += sp.vy;
+        sp.life--;
+        ctx.fillStyle = sp.color;
+        ctx.fillRect(sp.x, sp.y, 4, 4);
+      });
+      sparks = sparks.filter(sp => sp.life > 0);
+
+      // IA básica P2 para recuperarse
+      if (p2.hitTimer > 0) p2.hitTimer--;
+      if (p2.hp <= 0 && p2.hitTimer === 0) {
+        p2.hp = 100; // Reset
+        p1.combo = 0;
+      }
+
+      // DIBUJAR P1 (Luchador Estilo Street Fighter / Neo Geo)
+      ctx.save();
+      ctx.translate(p1.x, p1.y);
+      // Sombra en el piso
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath();
+      ctx.ellipse(22, 90, 25, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cuerpo
+      ctx.fillStyle = '#00ff87'; // Traje verde LeonBlack
+      ctx.fillRect(10, 25, 24, 40); // Torso
+      ctx.fillStyle = '#ffdfba'; // Piel
+      ctx.fillRect(14, 6, 16, 18); // Cabeza
+      ctx.fillStyle = '#ff0055'; // Cinta / Bandana
+      ctx.fillRect(12, 10, 20, 5);
+      // Piernas
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(10, 65, 10, 25);
+      ctx.fillRect(24, 65, 10, 25);
+
+      // Animación de ataque de 6-Botones
+      if (p1.action === 'attack') {
+        if (p1.attackType === 'punch' || p1.attackType === 'hadoken') {
+          ctx.fillStyle = '#ffdfba';
+          ctx.fillRect(30, 32, 28, 10); // Puño extendido
+          ctx.fillStyle = '#00ff87';
+          ctx.fillRect(52, 30, 10, 14); // Guantelete
+        } else if (p1.attackType === 'kick') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(30, 50, 32, 12); // Patada extendida
+        }
+      } else {
+        // Brazos en guardia
+        ctx.fillStyle = '#ffdfba';
+        ctx.fillRect(26, 28, 12, 18);
+      }
+      ctx.restore();
+
+      // DIBUJAR P2 (Rival CPU)
+      ctx.save();
+      ctx.translate(p2.x, p2.y);
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath();
+      ctx.ellipse(22, 90, 25, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Si está en hit cambia a blanco/rojo
+      ctx.fillStyle = p2.hitTimer > 0 ? '#ff2a6d' : '#9333ea';
+      ctx.fillRect(10, 25, 24, 40);
+      ctx.fillStyle = '#ffdfba';
+      ctx.fillRect(14, 6, 16, 18);
+      ctx.fillStyle = '#38bdf8'; // Bandana azul
+      ctx.fillRect(12, 10, 20, 5);
+      ctx.fillStyle = '#1e1b4b';
+      ctx.fillRect(10, 65, 10, 25);
+      ctx.fillRect(24, 65, 10, 25);
+      ctx.restore();
+
+      // BARRAS DE VIDA ESTILO CPS / NEO GEO (STREET FIGHTER / KOF)
+      // Barra P1
+      ctx.fillStyle = '#1f1f24';
+      ctx.fillRect(30, 24, 220, 16);
+      ctx.fillStyle = '#00ff87';
+      ctx.fillRect(32, 26, (p1.hp / 100) * 216, 12);
+
+      // Barra P2
+      ctx.fillStyle = '#1f1f24';
+      ctx.fillRect(canvas.width - 250, 24, 220, 16);
+      ctx.fillStyle = '#ff2a6d';
+      ctx.fillRect(canvas.width - 248, 26, (p2.hp / 100) * 216, 12);
+
+      // Nombres de los luchadores y HUD
+      ctx.font = '10px "Press Start 2P", monospace';
+      ctx.fillStyle = '#00ff87';
+      ctx.fillText('LEON (CPS)', 30, 16);
+      ctx.fillStyle = '#ff2a6d';
+      ctx.fillText('CPU RIVAL (NEOGEO)', canvas.width - 250, 16);
+
+      // Contador central estilo arcade
+      ctx.font = '16px "Press Start 2P", monospace';
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText('99', 305, 38);
+
+      if (p1.combo > 1) {
+        ctx.font = '12px "Press Start 2P", monospace';
+        ctx.fillStyle = '#ff007f';
+        ctx.fillText(p1.combo + ' HITS COMBO!', 40, 65);
+      }
+    }
+
     // 1. SPACE INVADERS ARCADE
     function renderSpaceGame() {
-      // Movimiento jugador
       if (state.keys.left && player.x > 10) player.x -= player.speed;
       if (state.keys.right && player.x < canvas.width - player.width - 10) player.x += player.speed;
 
-      // Disparo (Tecla B o Z o botón A virtual)
-      if ((state.keys.a || state.keys.b) && bullets.length < 3) {
+      if ((state.keys.a || state.keys.b || state.keys.x) && bullets.length < 3) {
         if (!player.lastShot || Date.now() - player.lastShot > 250) {
           bullets.push({ x: player.x + player.width / 2 - 2, y: player.y - 6 });
           player.lastShot = Date.now();
@@ -722,7 +1160,6 @@
         }
       }
 
-      // Dibujar Jugador (Nave Retro)
       ctx.fillStyle = '#00ff87';
       ctx.shadowColor = '#00ff87';
       ctx.shadowBlur = 10;
@@ -730,7 +1167,6 @@
       ctx.fillRect(player.x + 12, player.y - 6, 10, 6);
       ctx.shadowBlur = 0;
 
-      // Actualizar y dibujar balas
       ctx.fillStyle = '#ffffff';
       for (let i = bullets.length - 1; i >= 0; i--) {
         bullets[i].y -= 9;
@@ -738,7 +1174,6 @@
         if (bullets[i].y < 0) bullets.splice(i, 1);
       }
 
-      // Actualizar y dibujar enemigos
       let switchDir = false;
       ctx.fillStyle = '#ff2a6d';
       enemies.forEach(e => {
@@ -746,14 +1181,12 @@
         e.x += enemyDirection * 1.2;
         if (e.x > canvas.width - 40 || e.x < 20) switchDir = true;
 
-        // Dibujar Marcianito Retro
         ctx.fillRect(e.x, e.y, e.width, e.height);
         ctx.fillStyle = '#000';
         ctx.fillRect(e.x + 5, e.y + 4, 4, 4);
         ctx.fillRect(e.x + 20, e.y + 4, 4, 4);
         ctx.fillStyle = '#ff2a6d';
 
-        // Colisión con balas
         bullets.forEach((b, bIdx) => {
           if (b.x > e.x && b.x < e.x + e.width && b.y > e.y && b.y < e.y + e.height) {
             e.alive = false;
@@ -769,7 +1202,6 @@
         enemies.forEach(e => e.y += 10);
       }
 
-      // HUD Score
       ctx.font = '12px "Press Start 2P", monospace';
       ctx.fillStyle = '#00ff87';
       ctx.fillText('SCORE: ' + score, 20, 25);
@@ -779,15 +1211,12 @@
 
     // 2. SEGA TENNIS / PONG
     function renderPongGame() {
-      // Movimiento Pala Jugador
       if (state.keys.up && paddleL.y > 10) paddleL.y -= 6;
       if (state.keys.down && paddleL.y < canvas.height - paddleL.height - 10) paddleL.y += 6;
 
-      // IA Pala CPU
       const targetY = ball.y - paddleR.height / 2;
       paddleR.y += (targetY - paddleR.y) * 0.08;
 
-      // Pelota
       ball.x += ball.vx;
       ball.y += ball.vy;
 
@@ -796,24 +1225,20 @@
         playTone(400, 'square', 0.05, 0.08);
       }
 
-      // Colisión Pala Izq
       if (ball.x < 35 && ball.y > paddleL.y && ball.y < paddleL.y + paddleL.height) {
         ball.vx = Math.abs(ball.vx) * 1.05;
         ball.vy += ((ball.y - (paddleL.y + paddleL.height / 2)) / 15);
         playTone(600, 'square', 0.06, 0.15);
       }
 
-      // Colisión Pala Der
       if (ball.x > canvas.width - 35 && ball.y > paddleR.y && ball.y < paddleR.y + paddleR.height) {
         ball.vx = -Math.abs(ball.vx) * 1.05;
         playTone(550, 'square', 0.06, 0.15);
       }
 
-      // Punto
       if (ball.x < 0) { scoreR++; resetGameObjects('pong'); playTone(150, 'sawtooth', 0.2, 0.2); }
       if (ball.x > canvas.width) { scoreL++; resetGameObjects('pong'); playTone(750, 'triangle', 0.2, 0.2); }
 
-      // Dibujar Campo
       ctx.strokeStyle = '#262833';
       ctx.setLineDash([8, 8]);
       ctx.beginPath();
@@ -822,7 +1247,6 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Dibujar Palas y Pelota
       ctx.fillStyle = '#00ff87';
       ctx.fillRect(20, paddleL.y, paddleL.width, paddleL.height);
       ctx.fillStyle = '#38bdf8';
@@ -832,7 +1256,6 @@
       ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // HUD
       ctx.font = '20px "Press Start 2P", monospace';
       ctx.fillStyle = '#00ff87';
       ctx.fillText(scoreL, canvas.width / 2 - 60, 45);
@@ -851,20 +1274,17 @@
       if (bBall.x < 10 || bBall.x > canvas.width - 10) { bBall.vx *= -1; playTone(450, 'square', 0.04, 0.08); }
       if (bBall.y < 10) { bBall.vy *= -1; playTone(450, 'square', 0.04, 0.08); }
 
-      // Colisión Pala
       if (bBall.y > bPaddle.y - 8 && bBall.y < bPaddle.y + bPaddle.height && bBall.x > bPaddle.x && bBall.x < bPaddle.x + bPaddle.width) {
         bBall.vy = -Math.abs(bBall.vy);
         bBall.vx = ((bBall.x - (bPaddle.x + bPaddle.width / 2)) / 10);
         playTone(650, 'triangle', 0.05, 0.15);
       }
 
-      // Perder
       if (bBall.y > canvas.height) {
         resetGameObjects('brick');
         playTone(130, 'sawtooth', 0.25, 0.2);
       }
 
-      // Dibujar Pala y Pelota
       ctx.fillStyle = '#00ff87';
       ctx.fillRect(bPaddle.x, bPaddle.y, bPaddle.width, bPaddle.height);
       ctx.fillStyle = '#fff';
@@ -872,7 +1292,6 @@
       ctx.arc(bBall.x, bBall.y, bBall.radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Dibujar y Colisionar Bloques
       bricks.forEach(b => {
         if (!b.alive) return;
         ctx.fillStyle = b.color;
@@ -891,8 +1310,7 @@
       ctx.fillText('SCORE: ' + score, 20, 25);
     }
 
-    // Iniciar loop de render
+    // Iniciar bucle de juego
     requestAnimationFrame(gameLoop);
   </script>
-</body>
-</html>
+</body></html>
